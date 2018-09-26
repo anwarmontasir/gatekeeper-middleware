@@ -27,8 +27,13 @@ const USERS = [
 
 function gateKeeper(req, res, next) {
   // your code should replace the line below
+  const userObj = queryString.parse(req.get('x-username-and-password'));
+  req.user = USERS.find((user) => user.userName === userObj.user && user.password === userObj.pass);
+
   next();
 }
+
+app.use(gateKeeper);
 
 app.get("/api/users/me", (req, res) => {
   if (req.user === undefined) {
@@ -39,3 +44,4 @@ app.get("/api/users/me", (req, res) => {
 });
 
 // ... start the app
+app.listen(process.env.PORT || 8080, () => console.log(`Your app is listening on port ${process.env.PORT || 8080}`));
